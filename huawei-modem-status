@@ -1,0 +1,141 @@
+#!/usr/bin/python3
+
+# Copyright © 2016 Jakub Wilk <jwilk@jwilk.net>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the “Software”), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import argparse
+import re
+
+import serial
+
+def cmd(dev, cmd, want='^[^^]'):
+    cmd = cmd.encode('ASCII')
+    want = re.compile(want.encode('ASCII'))
+    dev.write(cmd + b'\r\n')
+    response = None
+    for line in dev:
+        line = line.rstrip(b'\r\n')
+        if line == b'OK':
+            break
+        if want.match(line):
+            response = line
+        else:
+            continue
+    if response is not None:
+        return response.decode('ASCII')
+
+def _parse(s, d):
+    n = int(s)
+    try:
+        return d[n]
+    except LookupError:
+        return '{0}?!'.format(n)
+
+def parse_srv_status(s):
+    d = {
+        0: 'no service',
+        1: 'restricted service',
+        2: 'OK',
+        3: 'restricted regional service',
+        4: 'power-saving and deep sleep state',
+    }
+    return _parse(s, d)
+
+def parse_srv_domain(s):
+    d = {
+        0: 'no service',
+        1: 'CS',
+        2: 'PS',
+        3: 'PS + CS',
+        4: 'CS and PS not registered, searching',
+    }
+    return _parse(s, d)
+
+def parse_roam_status(s):
+    d = {
+        0: 'no',
+        1: 'yes',
+    }
+    return _parse(s, d)
+
+def parse_sys_mode(s):
+    d = {
+        0: 'no service',
+        1: 'AMPS',
+        2: 'CDMA',
+        3: 'GSM/GPRS',
+        4: 'HDR',
+        5: 'WCDMA',
+        6: 'GPS',
+        7: 'GSM/WCDMA',
+        8: 'CDMA/HDR',
+        15: 'TD-SCDMA',
+    }
+    return _parse(s, d)
+
+def parse_sim_state(s):
+    d = {
+        0: 'invalid USIM card or PIN code locked',
+        1: 'OK',
+        2: 'invalid USIM (CS)',
+        3: 'invalid USIM (PS)',
+        4: 'invalid USIM (CS or PS)',
+        255: 'missing USIM card',
+    }
+    return _parse(s, d)
+
+def parse_sys_submode(s):
+    d = {
+        0: 'no service',
+        1: 'GSM',
+        2: 'GPRS',
+        3: 'EDGE',
+        4: 'WCDMA',
+        5: 'HSDPA',
+        6: 'HSUPA',
+        7: 'HSDPA + HSUPA',
+        8: 'TD-SCDMA',
+        9: 'HSPA+',
+        17: 'HSPA+ (64QAM)',
+        18: 'HSPA+ (MIMO)',
+    }
+    return _parse(s, d)
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-d', '--device', required=True)
+    options = ap.parse_args()
+    with serial.Serial(options.device, dsrdtr=True, rtscts=True) as dev:
+        model = cmd(dev, 'AT+CGMM')
+        print('Model:', model)
+        sysinfo = cmd(dev, 'AT^SYSINFO', want=r'^\^SYSINFO')
+        sysinfo = sysinfo.split(':', 1)[1]
+        [srv_status, srv_domain, roam_status, sys_mode, sim_state, reserved, sys_submode] = sysinfo.split(',')
+        print('SIM state:', parse_sim_state(sim_state))
+        print('Service status:', parse_srv_status(srv_status))
+        print('Service domain:', parse_srv_domain(srv_domain))
+        print('Roaming:', parse_roam_status(roam_status))
+        print('System mode:', parse_sys_mode(sys_mode))
+        print('System submode:', parse_sys_submode(sys_submode))
+
+if __name__ == '__main__':
+    main()
+
+# vim:ts=4 sts=4 sw=4 et
