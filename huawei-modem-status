@@ -134,6 +134,12 @@ def main():
         print('Roaming:', parse_roam_status(roam_status))
         print('System mode:', parse_sys_mode(sys_mode))
         print('System submode:', parse_sys_submode(sys_submode))
+        cmd(dev, 'AT+COPS=3,0')
+        operator = cmd(dev, 'AT+COPS?')
+        operator = operator.split(' ', 1)[1]
+        operator = operator.split(',')[2]
+        operator = operator.strip('"')
+        print('Network operator:', operator)
         rssi = cmd(dev, 'AT+CSQ', want=r'^[+]CSQ:')
         rssi = rssi.split(' ', 1)[1]
         rssi = rssi.split(',')[0]
