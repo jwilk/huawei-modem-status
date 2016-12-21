@@ -134,6 +134,11 @@ def main():
         print('Roaming:', parse_roam_status(roam_status))
         print('System mode:', parse_sys_mode(sys_mode))
         print('System submode:', parse_sys_submode(sys_submode))
+        rssi = cmd(dev, 'AT+CSQ', want=r'^[+]CSQ:')
+        rssi = rssi.split(' ', 1)[1]
+        rssi = rssi.split(',')[0]
+        rssi = -113 + 2 * int(rssi)
+        print('RSSI:', rssi, 'dBm')
 
 if __name__ == '__main__':
     main()
