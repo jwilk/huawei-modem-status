@@ -2,7 +2,7 @@
 
    $ huawei-modem-status -d /dev/serial/by-id/usb-HUAWEI_HUAWEI_Mobile-if03-port0 
    Model: E3131
-   SIM state: OK
+   SIM: OK
    Status: OK
    Domain: PS + CS
    Roaming: yes

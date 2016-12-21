@@ -113,7 +113,7 @@ def main():
         sysinfo = cmd(dev, 'AT^SYSINFO', want=r'^\^SYSINFO')
         sysinfo = sysinfo.split(':', 1)[1]
         [srv_status, srv_domain, roam_status, sys_mode, sim_state, reserved, sys_submode] = sysinfo.split(',')
-        print('SIM state:', parse_sim_state(sim_state))
+        print('SIM:', parse_sim_state(sim_state))
         print('Status:', parse_srv_status(srv_status))
         print('Domain:', parse_srv_domain(srv_domain))
         print('Roaming:', parse_roam_status(roam_status))
