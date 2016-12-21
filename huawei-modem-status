@@ -75,21 +75,6 @@ def parse_roam_status(s):
     }
     return _parse(s, d)
 
-def parse_sys_mode(s):
-    d = {
-        0: 'no service',
-        1: 'AMPS',
-        2: 'CDMA',
-        3: 'GSM/GPRS',
-        4: 'HDR',
-        5: 'WCDMA',
-        6: 'GPS',
-        7: 'GSM/WCDMA',
-        8: 'CDMA/HDR',
-        15: 'TD-SCDMA',
-    }
-    return _parse(s, d)
-
 def parse_sim_state(s):
     d = {
         0: 'invalid USIM card or PIN code locked',
@@ -132,8 +117,7 @@ def main():
         print('Service status:', parse_srv_status(srv_status))
         print('Service domain:', parse_srv_domain(srv_domain))
         print('Roaming:', parse_roam_status(roam_status))
-        print('System mode:', parse_sys_mode(sys_mode))
-        print('System submode:', parse_sys_submode(sys_submode))
+        print('System mode:', parse_sys_submode(sys_submode))
         cmd(dev, 'AT+COPS=3,0')
         operator = cmd(dev, 'AT+COPS?')
         operator = operator.split(' ', 1)[1]
