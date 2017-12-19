@@ -1,3 +1,6 @@
+Overview
+========
+
 .. code:: console
 
    $ huawei-modem-status -d /dev/serial/by-id/usb-HUAWEI_HUAWEI_Mobile-if03-port0
@@ -9,5 +12,14 @@
    Mode: HSPA+
    Operator: Plus
    RSSI: -79 dBm
+
+Prerequisites
+=============
+
+* Python 3
+* pyserial_
+
+.. _pyserial:
+   https://pypi.python.org/pypi/pyserial
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et
