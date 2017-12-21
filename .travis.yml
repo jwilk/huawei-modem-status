@@ -1,0 +1,21 @@
+dist: trusty
+sudo: false
+language: python
+python:
+- "3.2"
+- "3.3"
+- "3.4"
+- "3.5"
+- "3.6"
+- "3.7-dev"
+install:
+- pip install pyserial
+- pip install pyflakes
+- pip install pydiatra
+- pip install docutils
+- \[ "$TRAVIS_PYTHON_VERSION" = "3.2" ] || pip install pygments
+script:
+- ./huawei-modem-status --help
+- python3 -m pyflakes huawei-modem-status
+- python3 -m pydiatra huawei-modem-status
+- \[ "$TRAVIS_PYTHON_VERSION" = "3.2" ] || private/check-rst
