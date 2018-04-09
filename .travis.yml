@@ -12,8 +12,7 @@ before_install:
 - if [[ $TRAVIS_PYTHON_VERSION = 3.2 ]]; then if_pygments=:; fi
 install:
 - pip install pyserial
-- pip install pydiatra
-- pip install pyflakes
+- pip install pydiatra pyflakes
 - $if_pygments pip install docutils pygments
 script:
 - ./huawei-modem-status --help
