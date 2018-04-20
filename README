@@ -20,6 +20,6 @@ Prerequisites
 * pyserial_
 
 .. _pyserial:
-   https://pypi.python.org/pypi/pyserial
+   https://pypi.org/project/pyserial/
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et
