@@ -13,9 +13,9 @@ before_install:
 - if [[ $TRAVIS_PYTHON_VERSION = 3.[23] ]]; then pyflakes='pyflakes<2'; fi
 - if [[ $TRAVIS_PYTHON_VERSION = 3.2 ]]; then if_pygments=:; fi
 install:
-- pip install pyserial
-- pip install pydiatra $pyflakes
-- $if_pygments pip install restructuredtext-lint pygments
+- python3 -m pip install pyserial
+- python3 -m pip install pydiatra $pyflakes
+- $if_pygments python3 -m pip install restructuredtext-lint pygments
 script:
 - ./huawei-modem-status --help
 - python3 -m pydiatra huawei-modem-status
