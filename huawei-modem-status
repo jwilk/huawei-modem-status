@@ -101,6 +101,8 @@ def main():
         print('Domain:', parse_srv_domain(srv_domain))
         print('Roaming:', parse_roam_status(roam_status))
         print('Mode:', parse_sys_submode(sys_submode))
+        if sim_state != '1':
+            return
         cmd(dev, 'AT+COPS=3,0')
         operator = cmd(dev, 'AT+COPS?')
         operator = operator.split(' ', 1)[1]
