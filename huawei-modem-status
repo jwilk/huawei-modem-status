@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: MIT
 
 import argparse
+import os
 import re
+import sys
 
 import serial
 
@@ -90,7 +92,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('-d', '--device', required=True)
     options = ap.parse_args()
-    with serial.Serial(options.device, dsrdtr=True, rtscts=True) as dev:
+    try:
+        dev = serial.Serial(options.device, dsrdtr=True, rtscts=True)
+    except serial.serialutil.SerialException as exc:
+        cexc = exc.__context__
+        if isinstance(cexc, OSError) and cexc.filename == options.device:
+            msg = '{prog}: {path}: {exc}'.format(prog=ap.prog, path=options.device, exc=cexc.strerror)
+            print(msg, file=sys.stderr)
+            sys.exit(1)
+        raise
+    with dev:
         model = cmd(dev, 'AT+CGMM')
         print('Model:', model)
         sysinfo = cmd(dev, 'AT^SYSINFO', want=r'^\^SYSINFO')
