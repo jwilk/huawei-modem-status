@@ -32,7 +32,7 @@ def _parse(s, d):
     try:
         return d[n]
     except LookupError:
-        return '{0}?!'.format(n)
+        return f'{n}?!'
 
 def parse_srv_status(s):
     d = {
@@ -98,7 +98,7 @@ def main():
     except serial.serialutil.SerialException as exc:
         cexc = exc.__context__
         if isinstance(cexc, OSError) and cexc.filename == options.device:
-            msg = '{prog}: {path}: {exc}'.format(prog=ap.prog, path=options.device, exc=cexc.strerror)
+            msg = f'{ap.prog}: {options.device}: {cexc.strerror}'
             print(msg, file=sys.stderr)
             sys.exit(1)
         raise
