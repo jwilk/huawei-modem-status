@@ -9,6 +9,8 @@ import sys
 
 import serial
 
+0_0  # Python >= 3.6 is required
+
 def cmd(dev, cmd, want='^[^^]'):
     cmd = cmd.encode('ASCII')
     want = re.compile(want.encode('ASCII'))

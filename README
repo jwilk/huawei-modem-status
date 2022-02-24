@@ -16,7 +16,7 @@ Overview
 Prerequisites
 =============
 
-* Python 3
+* Python ≥ 3.6
 * pyserial_
 
 .. _pyserial:
