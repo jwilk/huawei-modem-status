@@ -92,6 +92,7 @@ def parse_sys_submode(s):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.color = False
     ap.add_argument('-d', '--device', required=True)
     options = ap.parse_args()
     try:
